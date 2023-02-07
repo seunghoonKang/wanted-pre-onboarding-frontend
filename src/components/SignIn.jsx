@@ -35,7 +35,6 @@ const SignIn = () => {
 
   useEffect(() => {
     if (token) {
-      alert("토큰이 있어 todo로 바로 갈게요");
       navigate("/todo");
     } else return;
   }, []);
