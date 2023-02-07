@@ -1,7 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const SignUp = () => {
+  const navigate = useNavigate();
+  const token = window.localStorage.getItem("token");
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -30,12 +33,20 @@ const Register = () => {
         })
         .then((res) => console.log(res));
       alert("회원 가입 완료!");
+      navigate("/signin");
     }
   };
 
   useEffect(() => {
     setDisabled(false);
   }, [email, password]);
+
+  useEffect(() => {
+    if (token) {
+      alert("토큰이 있어 todo로 바로 갈게요");
+      navigate("/todo");
+    } else return;
+  }, []);
 
   return (
     <div>
@@ -65,4 +76,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;
