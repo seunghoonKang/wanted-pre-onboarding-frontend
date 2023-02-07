@@ -48,6 +48,15 @@ const Todo = () => {
     setAddTodo("");
   };
 
+  const deleteHandler = (id) => {
+    axios.delete(`https://pre-onboarding-selection-task.shop/todos/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
   return (
     <div>
       <input
@@ -61,14 +70,21 @@ const Todo = () => {
         추가
       </button>
 
-      <ol>
+      <ul>
         {todos?.map((todo) => (
           <li key={todo.id}>
             <input type="checkbox" />
             <span>{todo.todo}</span>
+            <button data-testid="modify-button">수정</button>
+            <button
+              data-testid="delete-button"
+              onClick={() => deleteHandler(todo.id)}
+            >
+              삭제
+            </button>
           </li>
         ))}
-      </ol>
+      </ul>
     </div>
   );
 };
