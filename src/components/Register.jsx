@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Register = () => {
@@ -21,10 +22,13 @@ const Register = () => {
     if (!email.includes("@") || password.length < 8) {
       setDisabled(true);
       alert("email에는 @가, 비밀번호는 8자리 이상이어야 해요!");
-      //   setTimeout(() => {
-      //     setDisabled(false);
-      //   }, 2000);
     } else {
+      axios
+        .post("https://pre-onboarding-selection-task.shop/auth/signup", {
+          email: email,
+          password: password,
+        })
+        .then((res) => console.log(res));
       alert("회원 가입 완료!");
     }
   };
