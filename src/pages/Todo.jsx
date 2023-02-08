@@ -61,8 +61,38 @@ const Todo = () => {
   };
   console.log(todos);
 
-  const modifyHandler = (id) => {
-    setModify(!modify);
+  const checkboxHandler = (id, isCompleted, todoContent) => {
+    axios
+      .put(
+        `https://pre-onboarding-selection-task.shop/todos/${id}`,
+        {
+          todo: todoContent,
+          isCompleted: !isCompleted,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => console.log(res));
+  };
+
+  const modifyHandler = (id, isCompleted, todoContent) => {
+    axios
+      .put(
+        `https://pre-onboarding-selection-task.shop/todos/${id}`,
+        {
+          todo: todoContent,
+          isCompleted: isCompleted,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => console.log(res));
   };
 
   return (
@@ -81,46 +111,15 @@ const Todo = () => {
       <ul>
         {todos?.map((todo) => (
           <div key={todo.id}>
-            <TodoList todo={todo} todos={todos} setTodos={setTodos} />
+            <TodoList
+              todo={todo}
+              todos={todos}
+              setTodos={setTodos}
+              deleteHandler={deleteHandler}
+              checkboxHandler={checkboxHandler}
+              modifyHandler={modifyHandler}
+            />
           </div>
-          // <li key={todo.id}>
-          //   <input
-          //     type="checkbox"
-          //     onChange={() =>
-          //       checkboxHandler(todo.id, todo.todo, todo.isCompleted)
-          //     }
-          //   />
-          //   {!modify ? (
-          //     <>
-          //       <span>{todo.todo}</span>
-          //       <button data-testid="modify-button" onClick={modifyHandler}>
-          //         수정
-          //       </button>
-          //       <button
-          //         data-testid="delete-button"
-          //         onClick={() => deleteHandler(todo.id)}
-          //       >
-          //         삭제
-          //       </button>
-          //     </>
-          //   ) : (
-          //     <>
-          //       <input />
-          //       <button
-          //         data-testid="submit-button"
-          //         //onClick={() => modifyHandler(todo.id)}
-          //       >
-          //         제출
-          //       </button>
-          //       <button
-          //         data-testid="cancel-button"
-          //         //onClick={() => deleteHandler(todo.id)}
-          //       >
-          //         취소
-          //       </button>
-          //     </>
-          //   )}
-          // </li>
         ))}
       </ul>
     </div>

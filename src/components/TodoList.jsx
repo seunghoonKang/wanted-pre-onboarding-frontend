@@ -1,51 +1,27 @@
-import axios from "axios";
 import React, { useState } from "react";
 
-const TodoList = ({ todo, todos, setTodos }) => {
-  const token = window.localStorage.getItem("token");
+const TodoList = ({
+  todo,
+  todos,
+  setTodos,
+  deleteHandler,
+  checkboxHandler,
+  modifyHandler,
+}) => {
   const [modify, setModify] = useState(false);
   const [todoContent, setTodoContent] = useState(todo.todo);
-
-  const checkboxHandler = (id, isCompleted) => {
-    axios
-      .put(
-        `https://pre-onboarding-selection-task.shop/todos/${id}`,
-        {
-          todo: todoContent,
-          isCompleted: !isCompleted,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => console.log(res));
+  const cancelHandler = () => {
+    setModify(!modify);
+    setTodoContent(todo.todo);
   };
-
-  const modifyHandler = (id, isCompleted) => {
-    axios
-      .put(
-        `https://pre-onboarding-selection-task.shop/todos/${id}`,
-        {
-          todo: todoContent,
-          isCompleted: isCompleted,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => console.log(res));
-  };
-
   return (
     <div>
       <li>
         <input
           type="checkbox"
-          onChange={() => checkboxHandler(todo.id, todo.isCompleted)}
+          onChange={() =>
+            checkboxHandler(todo.id, todo.isCompleted, todoContent)
+          }
         />
         {!modify ? (
           <>
@@ -58,7 +34,7 @@ const TodoList = ({ todo, todos, setTodos }) => {
             </button>
             <button
               data-testid="delete-button"
-              // onClick={() => deleteHandler(todo.id)}
+              onClick={() => deleteHandler(todo.id)}
             >
               삭제
             </button>
@@ -72,14 +48,13 @@ const TodoList = ({ todo, todos, setTodos }) => {
             ></input>
             <button
               data-testid="submit-button"
-              onClick={() => modifyHandler(todo.id, todo.isCompleted)}
+              onClick={() =>
+                modifyHandler(todo.id, todo.isCompleted, todoContent)
+              }
             >
               제출
             </button>
-            <button
-              data-testid="cancel-button"
-              //onClick={() => deleteHandler(todo.id)}
-            >
+            <button data-testid="cancel-button" onClick={cancelHandler}>
               취소
             </button>
           </>
