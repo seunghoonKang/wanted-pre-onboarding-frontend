@@ -5,10 +5,10 @@ import TodoList from "../components/TodoList";
 
 const Todo = () => {
   const token = window.localStorage.getItem("token");
-  const [checked, setChecked] = useState(false);
+
   const [addTodo, setAddTodo] = useState("");
   const [todos, setTodos] = useState([]);
-  const [modify, setModify] = useState(false);
+
   const navigate = useNavigate();
 
   const getTodos = async () => {
@@ -61,21 +61,27 @@ const Todo = () => {
   };
   console.log(todos);
 
-  const checkboxHandler = (id, isCompleted, todoContent) => {
-    axios
-      .put(
-        `https://pre-onboarding-selection-task.shop/todos/${id}`,
-        {
-          todo: todoContent,
-          isCompleted: !isCompleted,
+  const checkboxHandler = (id, checked, todoContent) => {
+    axios.put(
+      `https://pre-onboarding-selection-task.shop/todos/${id}`,
+      {
+        todo: todoContent,
+        isCompleted: checked,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      }
+    );
+
+    setTodos(
+      todos.map((todo) =>
+        todo.isCompleted !== checked && todo.id === id
+          ? { ...todo, isCompleted: checked }
+          : todo
       )
-      .then((res) => console.log(res));
+    );
   };
 
   const modifyHandler = (id, isCompleted, todoContent) => {
@@ -92,7 +98,13 @@ const Todo = () => {
           },
         }
       )
-      .then((res) => console.log(res));
+      .then((res) =>
+        setTodos(
+          todos.map((todo) =>
+            todo.id === res.data.id ? { ...todo, todo: res.data.todo } : todo
+          )
+        )
+      );
   };
 
   return (

@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 
-const TodoList = ({
-  todo,
-  todos,
-  setTodos,
-  deleteHandler,
-  checkboxHandler,
-  modifyHandler,
-}) => {
+const TodoList = ({ todo, deleteHandler, checkboxHandler, modifyHandler }) => {
   const [modify, setModify] = useState(false);
   const [todoContent, setTodoContent] = useState(todo.todo);
+  const [checked, setChecked] = useState(!todo.isCompleted);
   const cancelHandler = () => {
     setModify(!modify);
     setTodoContent(todo.todo);
@@ -17,12 +11,27 @@ const TodoList = ({
   return (
     <div>
       <li>
-        <input
-          type="checkbox"
-          onChange={() =>
-            checkboxHandler(todo.id, todo.isCompleted, todoContent)
-          }
-        />
+        {todo.isCompleted ? (
+          <input
+            type="checkbox"
+            value={undefined || ""}
+            onChange={() => {
+              setChecked(!checked);
+              checkboxHandler(todo.id, checked, todoContent);
+            }}
+            checked
+          />
+        ) : (
+          <input
+            type="checkbox"
+            value={undefined || ""}
+            onChange={() => {
+              setChecked(!checked);
+              checkboxHandler(todo.id, checked, todoContent);
+            }}
+          />
+        )}
+
         {!modify ? (
           <>
             <span>{todo.todo}</span>
@@ -45,12 +54,14 @@ const TodoList = ({
               value={todoContent}
               name="modifyContent"
               onChange={(e) => setTodoContent(e.target.value)}
+              data-testid="modify-input"
             ></input>
             <button
               data-testid="submit-button"
-              onClick={() =>
-                modifyHandler(todo.id, todo.isCompleted, todoContent)
-              }
+              onClick={() => {
+                modifyHandler(todo.id, todo.isCompleted, todoContent);
+                setModify(!modify);
+              }}
             >
               제출
             </button>
