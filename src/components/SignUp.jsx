@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { baseInstance } from "../api/api";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -26,8 +27,8 @@ const SignUp = () => {
       setDisabled(true);
       alert("email에는 @가, 비밀번호는 8자리 이상이어야 해요!");
     } else {
-      axios
-        .post("https://pre-onboarding-selection-task.shop/auth/signup", {
+      baseInstance
+        .post("/auth/signup", {
           email: email,
           password: password,
         })

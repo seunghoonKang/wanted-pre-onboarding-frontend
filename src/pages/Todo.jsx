@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authInstance } from "../api/api";
 import TodoList from "../components/TodoList";
 
 const Todo = () => {
@@ -12,13 +13,7 @@ const Todo = () => {
   const navigate = useNavigate();
 
   const getTodos = async () => {
-    await axios
-      .get("https://pre-onboarding-selection-task.shop/todos", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => setTodos(res.data));
+    await authInstance.get(`todos`).then((res) => setTodos(res.data));
   };
 
   useEffect(() => {
@@ -33,48 +28,29 @@ const Todo = () => {
     setAddTodo(e.target.value);
   };
 
+  const addTodos = async () => {
+    await authInstance
+      .post("/todos", { todo: addTodo })
+      .then((res) => setTodos([...todos, res.data]));
+  };
+
   const onClickHandler = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        "https://pre-onboarding-selection-task.shop/todos",
-        { todo: addTodo },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setTodos([...todos, res.data]);
-      });
+    addTodos();
     setAddTodo("");
   };
 
   const deleteHandler = (id) => {
-    axios.delete(`https://pre-onboarding-selection-task.shop/todos/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    authInstance.delete(`todos/${id}`);
     setTodos(todos.filter((todo) => todo.id !== id));
   };
   console.log(todos);
 
   const checkboxHandler = (id, checked, todoContent) => {
-    axios.put(
-      `https://pre-onboarding-selection-task.shop/todos/${id}`,
-      {
-        todo: todoContent,
-        isCompleted: checked,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
+    authInstance.put(`todos/${id}`, {
+      todo: todoContent,
+      isCompleted: checked,
+    });
     setTodos(
       todos.map((todo) =>
         todo.isCompleted !== checked && todo.id === id
@@ -85,19 +61,11 @@ const Todo = () => {
   };
 
   const modifyHandler = (id, isCompleted, todoContent) => {
-    axios
-      .put(
-        `https://pre-onboarding-selection-task.shop/todos/${id}`,
-        {
-          todo: todoContent,
-          isCompleted: isCompleted,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    authInstance
+      .put(`todos/${id}`, {
+        todo: todoContent,
+        isCompleted: isCompleted,
+      })
       .then((res) =>
         setTodos(
           todos.map((todo) =>

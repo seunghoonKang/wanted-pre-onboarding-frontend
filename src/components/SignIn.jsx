@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { baseInstance } from "../api/api";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("https://pre-onboarding-selection-task.shop/auth/signin", {
+    baseInstance
+      .post("/auth/signin", {
         email: email,
         password: password,
       })
