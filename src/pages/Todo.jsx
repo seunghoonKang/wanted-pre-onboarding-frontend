@@ -1,15 +1,13 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authInstance } from "../api/api";
+import AddTodoItem from "../components/AddTodoItem";
 import TodoList from "../components/TodoList";
 
 const Todo = () => {
   const token = window.localStorage.getItem("token");
-
   const [addTodo, setAddTodo] = useState("");
   const [todos, setTodos] = useState([]);
-
   const navigate = useNavigate();
 
   const getTodos = async () => {
@@ -24,27 +22,16 @@ const Todo = () => {
     getTodos();
   }, []);
 
-  const changeHandler = (e) => {
-    setAddTodo(e.target.value);
-  };
-
   const addTodos = async () => {
     await authInstance
       .post("/todos", { todo: addTodo })
       .then((res) => setTodos([...todos, res.data]));
   };
 
-  const onClickHandler = (e) => {
-    e.preventDefault();
-    addTodos();
-    setAddTodo("");
-  };
-
   const deleteHandler = (id) => {
     authInstance.delete(`todos/${id}`);
     setTodos(todos.filter((todo) => todo.id !== id));
   };
-  console.log(todos);
 
   const checkboxHandler = (id, checked, todoContent) => {
     authInstance.put(`todos/${id}`, {
@@ -77,17 +64,11 @@ const Todo = () => {
 
   return (
     <div>
-      <input
-        data-testid="new-todo-input"
-        name="addTodo"
-        onChange={changeHandler}
-        type="text"
-        value={addTodo}
+      <AddTodoItem
+        addTodo={addTodo}
+        setAddTodo={setAddTodo}
+        addTodos={addTodos}
       />
-      <button onClick={onClickHandler} data-testid="new-todo-add-button">
-        추가
-      </button>
-
       <ul>
         {todos?.map((todo) => (
           <div key={todo.id}>
