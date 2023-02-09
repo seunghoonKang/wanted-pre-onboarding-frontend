@@ -4,6 +4,6 @@
 ### `yarn start` 
 
 
-### 배포 주소
+## 배포 주소
 [https://seunghoonkang.github.io/wanted-pre-onboarding-frontend/](https://seunghoonkang.github.io/wanted-pre-onboarding-frontend/)
 
